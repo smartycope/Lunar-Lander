@@ -4,12 +4,10 @@ import pygame, pygame_gui
 from pygame_gui.elements import *
 from pygame_gui.windows import UIColourPickerDialog, UIFileDialog
 
-from menu import menu
-
 from os.path import dirname; DIR = dirname(__file__) + '/../'
 
 # All the different elements the GUIs can have. They're essentially my own wrappers for pygame_gui's UIElements,
-#   because they're poorly written (or at least, hard to interface with).
+#   because they're poorly written (or at least, annoying to interface with).
 #   HandleEvent()'s return True is something happened, and false if not (value and None in the case of Slider)
 
 class AbstractElement:
@@ -25,7 +23,7 @@ class AbstractElement:
             self.size[1] = defaultHeight
 
         if pos[0] is None:
-            if defaultX is None:j
+            if defaultX is None:
                 self.pos[0] = (self.container.get_size()[0] / 2) - (self.size[0] / 2)
             else:
                 self.pos[0] = defaultX
@@ -34,6 +32,9 @@ class AbstractElement:
                 self.pos[1] = (self.container.get_size()[1] / 2) - (self.size[1] / 2)
             else:
                 self.pos[1] = defaultY
+
+        if self.container is None:
+            self.container = self.uiManager.get_root_container()
 
         self.element = None
 
@@ -66,22 +67,22 @@ class AbstractElement:
 
 
 class Button(AbstractElement):
-    def __init__(self, pos, uiManager, container, text, func, params=None, label=None, size=[None, None]):
+    def __init__(self, pos, uiManager, text, func, *params, label=None, size=[None, None], container=None):
         super().__init__(uiManager, container, pos, size, 
                          None,
                          None,
                          len(text) * 10,
                          30)
 
-        self.func      = func
-        self.params    = params
+        self.func   = func
+        self.params = params
 
         labelPos = [pos[0] - (self.size[0] / 2), pos[1] - self.size[1]]
 
         self.element = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(self.pos, self.size), text=text, manager=self.uiManager, container=self.container)
         
         if label is not None:
-            self.label = Text(labelPos, uiManager, container, label)
+            self.label = Label(labelPos, uiManager, label, container=container)
         else:
             self.label = None
 
@@ -90,10 +91,8 @@ class Button(AbstractElement):
            event.user_type == pygame_gui.UI_BUTTON_PRESSED and \
            event.ui_element == self.element:
 
-            if self.params is not None:
-                self.func(*self.params)
-            else:
-                self.func()
+            self.func(*self.params)
+
             return True
         else:
             return False
@@ -101,7 +100,7 @@ class Button(AbstractElement):
 
 class ColorPicker(AbstractElement):
     def __init__(self, uiManager, pos=[None, None], size=[None, None], startingColor=None, title=''):
-        super().__init__(uiManager, uiManager.get_root_container(), pos, size,
+        super().__init__(uiManager, None, pos, size,
                          None,
                          None,
                          390,
@@ -124,7 +123,7 @@ class ColorPicker(AbstractElement):
 
 
 class CheckBox(AbstractElement):
-    def __init__(self, pos, uiManager, container, label, startValue=False, size=[None, None], hoverText=''):
+    def __init__(self, pos, uiManager, label, startValue=False, size=[None, None], hoverText='', container=None):
         super().__init__(uiManager, container, pos, size,
                          None,
                          None,
@@ -139,7 +138,7 @@ class CheckBox(AbstractElement):
 
         labelPos = [pos[0] + self.size[0] + 5, pos[1] + (self.size[1] / 2) - ((self.size[1] - 3) / 4)]
 
-        self.label = Text(labelPos, uiManager, container, label)
+        self.label = Label(labelPos, uiManager, container, label)
 
         self.checked = startValue
 
@@ -164,7 +163,7 @@ class CheckBox(AbstractElement):
 
 
 class Slider(AbstractElement):
-    def __init__(self, pos, uiManager, container, label, range=(-10, 10), startValue = 0, size=[None, None]):
+    def __init__(self, pos, uiManager, label, range=(-10, 10), startValue = 0, size=[None, None], container=None):
         super().__init__(uiManager, container, pos, size,
                          None,
                          None,
@@ -175,11 +174,11 @@ class Slider(AbstractElement):
 
         labelPos = [self.pos[0], self.pos[1] - (self.size[1] / 2) - 5]
 
-        self.label = Text(labelPos, self.uiManager, self.container, label)
+        self.label = Label(labelPos, self.uiManager, self.container, label)
 
         valueLabelPos = [self.pos[0] - 20, self.pos[1] + (self.size[1] / 4) - 1]
 
-        self.valueLabel = Text(valueLabelPos, uiManager, container, str(self.value), size=[25, None])
+        self.valueLabel = Label(valueLabelPos, uiManager, container, str(self.value), size=[25, None])
 
         self.range = range
         
@@ -222,8 +221,8 @@ class Slider(AbstractElement):
             return None
 
 
-class Text(AbstractElement):
-    def __init__(self, pos, uiManager, container, text, size=[None, None]):
+class Label(AbstractElement):
+    def __init__(self, pos, uiManager, text, size=[None, None], container=None):
         super().__init__(uiManager, container, pos, size,
                          None,
                          None,
@@ -241,8 +240,8 @@ class Text(AbstractElement):
 
 
 class InputBox(AbstractElement):
-    def __init__(self, pos, uiManager, container, label, startingText='', numbersOnly=False,
-                 textLengthLimit=None, allowedChars=None, disallowedChars=None, size=[None, None]):
+    def __init__(self, pos, uiManager, label, startingText='', numbersOnly=False,
+                 textLengthLimit=None, allowedChars=None, disallowedChars=None, size=[None, None], container=None):
         super().__init__(uiManager, container, pos, size,
                          None,
                          None,
@@ -250,7 +249,7 @@ class InputBox(AbstractElement):
                          30)
 
         labelPos = [pos[0], pos[1] - (size[1] / 2)]
-        self.label = Text(labelPos, uiManager, container, label)
+        self.label = Label(labelPos, uiManager, container, label)
 
         self.element = pygame_gui.elements.UITextEntryLine(pygame.Rect(self.pos, self.size), self.uiManager, self.container)
 
@@ -278,7 +277,7 @@ class InputBox(AbstractElement):
 
 
 class ScrollBar(AbstractElement):
-    def __init__(self, uiManager, container, verticalPercentage, pos=[None, None], size=[None, None]):
+    def __init__(self, uiManager, verticalPercentage, pos=[None, None], size=[None, None], container=None):
         super().__init__(uiManager, container, pos, size,
                          container.get_size()[0] - 15 if size[0] is None else size[0],
                          0,
@@ -329,7 +328,7 @@ class ScrollBar(AbstractElement):
 
 class FilePicker(AbstractElement):
     def __init__(self, uiManager, pos=[None, None], size=[None, None], startingPath=DIR, title=''):
-        super().__init__(uiManager, uiManager.get_root_container(), pos, size,
+        super().__init__(uiManager, None, pos, size,
                          None,
                          None,
                          260,
@@ -352,7 +351,7 @@ class FilePicker(AbstractElement):
 
 
 
-
+'''
 class RenderedText:
     def __init__(self, text, container, pos=[None, None], font=None, size=24):
         if font is None:
@@ -376,7 +375,7 @@ class RenderedText:
     def draw(self, surface):
         surface.blit(self.textSurface, self.pos)
 
-
+'''
 
 # if (event.user_type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == '#main_text_entry'):
 

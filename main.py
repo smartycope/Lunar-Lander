@@ -8,4 +8,4 @@ args = parser.parse_args()
 
 game = Game(args=args)
 game.run()
-game.exit()
+game.currentScene.exit()

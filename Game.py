@@ -1,6 +1,7 @@
-from Scene  import MoonLander
+from MoonLander  import MoonLander
 from Config import *
 from GlobalFuncs import *
+from DeathMenu import DeathMenu
 
 class Game:
     def __init__(self, size = [None, None], title = 'Hello World!', args=None):
@@ -8,33 +9,56 @@ class Game:
         self.args = args
         self.fps = FPS
 
-        self.initPygame(size, title)
+        self.initPygame(size, title)        
 
-        self.moonLander = MoonLander(self.mainSurface)
-        self.currentScene = self.moonLander
+        self.scenes = {
+            'MoonLander': MoonLander, #(self.mainSurface),
+            'DeathMenu':  DeathMenu #(self.mainSurface)
+        }
 
+        self.currentScene = self.scenes['MoonLander'](self.mainSurface)
+
+        self.sceneStack = ['MoonLander']
 
     def run(self):
         while True:
             deltaTime = self.clock.tick(self.fps) / 1000.0
-            
+            # print(self.sceneStack)
             for event in pygame.event.get():
+                # if event.type != pygame.MOUSEMOTION: print(event)
                 self.currentScene.handleEvent(event)
                 
-            self.currentScene.run(deltaTime)
+
+            # self.currentScene = self.scenes[self.currentScene.run(deltaTime)]
+            sceneCommand = self.currentScene.run(deltaTime)
+            # print(sceneCommand)
+            if sceneCommand == '':
+                pass
+            elif sceneCommand == 'prev':
+                self.sceneStack.pop()
+                switchToScene = self.sceneStack.pop()
+                self.currentScene = self.scenes[switchToScene](self.mainSurface)
+                self.sceneStack.append(switchToScene)
+            else:
+                self.sceneStack.append(sceneCommand)
+                self.currentScene = self.scenes[sceneCommand](self.mainSurface)
+
 
             pygame.display.flip()
             pygame.display.update()
-            self.mainSurface.fill(self.currentScene.backgroundColor)
+            if type(self.currentScene.background) is list or tuple:
+                self.mainSurface.fill(self.currentScene.background)
+            else:
+                self.mainSurface = self.currentScene.background.copy()
 
 
     def initPygame(self, size, title):
         #* Initialize Pygame
         pygame.init()
         self.clock = pygame.time.Clock()
-        pygame.mouse.set_visible(False)
+        # pygame.mouse.set_visible(False)
         tmp = pygame.display.Info(); self.screenSize = (tmp.current_w, tmp.current_h)
-        pygame.key.set_repeat(KEY_REPEAT_DELAY, KEY_REPEAT_INTERVAL)
+        # pygame.key.set_repeat(KEY_REPEAT_DELAY, KEY_REPEAT_INTERVAL)
         pygame.display.set_caption(title)
 
         self.fullscreenWindowFlags = pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.FULLSCREEN | pygame.NOFRAME
