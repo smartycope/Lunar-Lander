@@ -1,12 +1,12 @@
-from Item import Coin, GasCan
 from Planet import *
+from Item import *
 
-class Mars(Planet):
+class Jupiter(Planet):
     def init(self, **params):
         super().init(**params)
-        self.background = [255, 188, 171]
-        self.gravity = 3.72
-        self.texture = self.loadAsset('marsTexture')
+        self.background = [250, 229, 203]
+        self.gravity = 24.79
+        self.texture = self.loadAsset('jupiterTexture')
         self.items += (Coin(),)
 
 

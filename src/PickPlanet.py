@@ -59,18 +59,18 @@ class PickPlanetMenu(GuiScene):
         sun      = Animation(preloadedFrames=params['sunAnimation'],      secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
 
         self.planets = [
-            AnimationButton(moonLoc,     self.uiManager, moon,     self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(marsLoc,     self.uiManager, mars,     self.switchMenu, 'Mars', background=self.background),
-            AnimationButton(mercuryLoc,  self.uiManager, mercury,  self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(venusLoc,    self.uiManager, venus,    self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(uranusLoc,   self.uiManager, uranus,   self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(neptuneLoc,  self.uiManager, neptune,  self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(jupiterLoc,  self.uiManager, jupiter,  self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(saturnLoc,   self.uiManager, saturn,   self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(makemakeLoc, self.uiManager, makemake, self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(erisLoc,     self.uiManager, eris,     self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(haumeaLoc,   self.uiManager, haumea,   self.switchMenu, 'Moon', background=self.background),
-            AnimationButton(sunLoc,      self.uiManager, sun,      self.switchMenu, 'Moon', background=self.background),
+            AnimationButton(moonLoc,     self.uiManager, moon,     self.switchMenu, 'Moon',     background=self.background),
+            AnimationButton(marsLoc,     self.uiManager, mars,     self.switchMenu, 'Mars',     background=self.background),
+            AnimationButton(mercuryLoc,  self.uiManager, mercury,  self.switchMenu, 'Mercury',  background=self.background),
+            AnimationButton(venusLoc,    self.uiManager, venus,    self.switchMenu, 'Venus',    background=self.background),
+            AnimationButton(uranusLoc,   self.uiManager, uranus,   self.switchMenu, 'Uranus',   background=self.background),
+            AnimationButton(neptuneLoc,  self.uiManager, neptune,  self.switchMenu, 'Neptune',  background=self.background),
+            AnimationButton(jupiterLoc,  self.uiManager, jupiter,  self.switchMenu, 'Jupiter',  background=self.background),
+            AnimationButton(saturnLoc,   self.uiManager, saturn,   self.switchMenu, 'Saturn',   background=self.background),
+            AnimationButton(makemakeLoc, self.uiManager, makemake, self.switchMenu, 'Makemake', background=self.background),
+            AnimationButton(erisLoc,     self.uiManager, eris,     self.switchMenu, 'Eris',     background=self.background),
+            AnimationButton(haumeaLoc,   self.uiManager, haumea,   self.switchMenu, 'Haumea',   background=self.background),
+            AnimationButton(sunLoc,      self.uiManager, sun,      self.switchMenu, 'Sun',      background=self.background),
         ]
 
         self.leftButton  = Button([self.center.x - 250, selectButtonsLocY], self.uiManager, '<', self.moveSelection, LEFT,  size=selectButtonsSize)
@@ -108,6 +108,10 @@ class PickPlanetMenu(GuiScene):
         
         if key == 'escape':
             self.exit()
+        if key == 'left':
+            self.moveSelection(LEFT)
+        if key == 'right':
+            self.moveSelection(RIGHT)
 
 
     def run(self, deltaTime):
@@ -178,8 +182,8 @@ class PickPlanetMenu(GuiScene):
 
         if self.selectedIndex < 0:
             self.selectedIndex = 0
-        if self.selectedIndex > len(self.planets):
-            self.selectedIndex = len(self.planets)
+        if self.selectedIndex >= len(self.planets):
+            self.selectedIndex = len(self.planets) - 1
 
         self.background = self.backgroundColors[self.selectedIndex]
         # self.background = self.planets[self.selectedIndex].element.disabled_image

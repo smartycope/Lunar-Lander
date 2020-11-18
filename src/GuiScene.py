@@ -40,6 +40,17 @@ class GuiScene(Scene):
         self.uiManager.process_events(event)
 
 
+    def keyDown(self, event):
+        key = super().keyDown(event)
+        
+        if key == 'escape':
+            self.exit()
+        if key == 'left':
+            self.moveSelection(LEFT)
+        if key == 'right':
+            self.moveSelection(RIGHT)
+            
+
     def run(self, deltaTime):
         if self.debug:
             self.uiManager.set_visual_debug_mode(self.debug)

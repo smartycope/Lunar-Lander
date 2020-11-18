@@ -1,12 +1,26 @@
-from Config import *
-from GlobalFuncs import *
-from DeathMenu import DeathMenu
-from PickLander import PickLanderMenu
-from PickPlanet import PickPlanetMenu
-from ClassicLander import ClassicLander
-from Moon import Moon
-from Mars import Mars
+from Config        import *
+from GlobalFuncs   import *
+
+# Scenes
 from LoadingScreen import LoadingScreen
+from PickLander    import PickLanderMenu
+from PickPlanet    import PickPlanetMenu
+from DeathMenu     import DeathMenu
+
+# Planet Scenes
+from Moon          import Moon
+from Mars          import Mars
+from Mercury       import Mercury
+from Venus         import Venus
+from Uranus        import Uranus
+from Neptune       import Neptune
+from Jupiter       import Jupiter
+from Saturn        import Saturn
+from Makemake      import Makemake
+from Eris          import Eris
+from Haumea        import Haumea
+from Sun           import Sun
+
 
 class Game:
     def __init__(self, size = [None, None], title = 'Hello World!', args=None):
@@ -21,6 +35,16 @@ class Game:
         self.scenes = {
             'Moon':           Moon,
             'Mars':           Mars,
+            'Mercury':        Mercury,
+            'Venus':          Venus,
+            'Uranus':         Uranus,
+            'Neptune':        Neptune,
+            'Jupiter':        Jupiter,
+            'Saturn':         Saturn,
+            'Makemake':       Makemake,
+            'Eris':           Eris,
+            'Haumea':         Haumea,
+            'Sun':            Sun,
             'DeathMenu':      DeathMenu,
             'LoadingScreen':  LoadingScreen,
             'PickLanderMenu': PickLanderMenu,

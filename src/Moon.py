@@ -1,9 +1,6 @@
 from Item import Coin, GasCan
 from Planet import *
 
-# This is so I can use money in a pass-by-reference manner
-class Money: money = 0
-
 class Moon(Planet):
     def init(self, **params):
         super().init(**params)

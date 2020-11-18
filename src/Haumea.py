@@ -1,12 +1,12 @@
-from Item import Coin, GasCan
 from Planet import *
+from Item import *
 
-class Mars(Planet):
+class Haumea(Planet):
     def init(self, **params):
         super().init(**params)
-        self.background = [255, 188, 171]
-        self.gravity = 3.72
-        self.texture = self.loadAsset('marsTexture')
+        self.background = [5, 5, 5]
+        self.gravity = .401
+        self.texture = self.loadAsset('haumeaTexture')
         self.items += (Coin(),)
 
 
