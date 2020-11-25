@@ -2,32 +2,26 @@ from GuiScene import *
 
 
 class LandingMenu(GuiScene):
-    def init(self, **params):
-        super().init()
-        self.menuParams['lander'] = params['lander']
-
     def renderUI(self):
         super().renderUI()
 
-        self.background = None
-
-        # respawnButtonLoc  = self.centerPoint - [50, 30]
-        respawnButtonLoc  = [300, 550]
-        respawnButtonSize = [100, 50]
-
-        # textLoc  = self.centerPoint
-        textLoc  = Pointi(500, 175)
         textSize = 50
+        textLoc  = Pointi(self.center.x, self.center.y - 200)
 
-        toUpgradeButtonLoc  = Pointi(830, 550)
-        toUpgradeButtonSize = respawnButtonSize
+        playButtonSize = [300, 100]
+        playButtonLoc  = Pointi(self.center.x - playButtonSize[0] / 2, self.center.y + 200)
 
-        self.text = Text('You Died', textLoc, size=textSize)
+        aboutButtonSize = [150, 50]
+        aboutButtonLoc  = Pointi(self.center.x - aboutButtonSize[0] / 2, self.center.y + 305)
+
+        # toUpgradeButtonLoc  = Pointi(, 550)
+        # toUpgradeButtonSize = respawnButtonSize
+
+        self.text = Text('Solar Lander', textLoc, size=textSize)
 
         self.elements += (
-            # Label(textLoc.datai(), self.uiManager, 'You Died', textSize),
-            Button(respawnButtonLoc, self.uiManager, 'Respawn', self.switchMenu, 'prev', size=respawnButtonSize),
-            Button(toUpgradeButtonLoc.datai(), self.uiManager, 'Go to Menu', self.switchMenu, 'PickLanderMenu', size=toUpgradeButtonSize)
+            Button(playButtonLoc,  self.uiManager, 'Play',  self.switchMenu, 'PickLanderMenu', size=playButtonSize),
+            Button(aboutButtonLoc, self.uiManager, 'About', self.switchMenu, 'CreditsMenu',    size=aboutButtonSize),
         )
 
     def keyDown(self, event):
@@ -35,9 +29,10 @@ class LandingMenu(GuiScene):
         
         if key == 'escape':
             self.exit()
-        if key == 'r' or key == 'enter' or key == 'return':
-            self.menu = 'prev'
+        if key == 'p' or key == 'enter' or key == 'return':
+            self.switchMenu('PickLanderMenu')
+
 
     def run(self, deltaTime):
-        # self.text.draw(self.mainSurface)
+        self.text.draw(self.mainSurface)
         return super().run(deltaTime)

@@ -130,3 +130,7 @@ def timeFunc(func, params, name, accuracy = 5):
     func(*params)
     elapsed_time = round(time.process_time() - t, accuracy)
     print(name, ' ' * (15 - len(name)), '\ttook', elapsed_time if elapsed_time >= 0.00001 else 0.00000, '\ttime to run.')
+
+
+def closeEnough(target, test, threshold):
+    return True if test <= target + threshold and test >= target - threshold else False

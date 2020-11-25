@@ -4,31 +4,34 @@ from Animation import Animation
 
 class PickPlanetMenu(GuiScene):
     def init(self, **params):
-        super().init()
+        # This must be in the same order as self.planets!
+        self.planetNames = ['moon', 'mars', 'mercury', 'venus', 'uranus', 'neptune', 'jupiter', 'saturn', 'makemake', 'eris', 'haumea', 'sun']
+        self.animations = {}
+        for i in self.planetNames:
+            self.animations[i] = params[i + 'Animation']
+
         self.dir += 'planets/planetAnimations/'
 
+
+    def renderUI(self):
         selectButtonsSize = [80, 400]
         selectButtonsLocY = self.center.y - 200
 
         self.selectedIndex = 0
 
-        self.positionSelected = [self.center.x - 90,  self.center.y - 70]
-        self.positionLeft     = [self.center.x - 550, self.center.y - 70]
-        self.positionRight    = [self.center.x + 350, self.center.y - 70]
+        self.positionSelected = [self.center.x - 135, self.center.y - 70]
+        self.positionLeft     = [self.center.x - 665, self.center.y - 70]
+        self.positionRight    = [self.center.x + 400, self.center.y - 70]
 
-
-
-        # This must be in the same order as self.planets!
-        self.planetNames = ['moon', 'mars', 'mercury', 'venus', 'uranus', 'neptune', 'jupiter', 'saturn', 'makemake', 'eris', 'haumea', 'sun']
 
         self.backgroundColors = []
         for i in self.planetNames:
-            self.backgroundColors.append(pygame.transform.average_color(params[i + 'Animation'][0]))
+            self.backgroundColors.append(pygame.transform.average_color(self.animations[i][0]))
+
+        # If you're getting an error here, it quite possible it's because data isn't getting passed between scenes correctly. Check startScene in Game.py
 
         self.background = self.backgroundColors[0]
 
-
-        
         # animationWidth = 275
         nowhere = [10000, 10000]
 
@@ -45,39 +48,39 @@ class PickPlanetMenu(GuiScene):
         haumeaLoc   = nowhere
         sunLoc      = nowhere
 
-        moon     = Animation(preloadedFrames=params['moonAnimation'],     secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        mars     = Animation(preloadedFrames=params['marsAnimation'],     secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        mercury  = Animation(preloadedFrames=params['mercuryAnimation'],  secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        venus    = Animation(preloadedFrames=params['venusAnimation'],    secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        uranus   = Animation(preloadedFrames=params['uranusAnimation'],   secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        neptune  = Animation(preloadedFrames=params['neptuneAnimation'],  secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        jupiter  = Animation(preloadedFrames=params['jupiterAnimation'],  secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        saturn   = Animation(preloadedFrames=params['saturnAnimation'],   secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        makemake = Animation(preloadedFrames=params['makemakeAnimation'], secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        eris     = Animation(preloadedFrames=params['erisAnimation'],     secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        haumea   = Animation(preloadedFrames=params['haumeaAnimation'],   secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
-        sun      = Animation(preloadedFrames=params['sunAnimation'],      secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        moon     = Animation(preloadedFrames=self.animations['moon'],     secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        mars     = Animation(preloadedFrames=self.animations['mars'],     secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        mercury  = Animation(preloadedFrames=self.animations['mercury'],  secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        venus    = Animation(preloadedFrames=self.animations['venus'],    secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        uranus   = Animation(preloadedFrames=self.animations['uranus'],   secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        neptune  = Animation(preloadedFrames=self.animations['neptune'],  secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        jupiter  = Animation(preloadedFrames=self.animations['jupiter'],  secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        saturn   = Animation(preloadedFrames=self.animations['saturn'],   secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        makemake = Animation(preloadedFrames=self.animations['makemake'], secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        eris     = Animation(preloadedFrames=self.animations['eris'],     secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        haumea   = Animation(preloadedFrames=self.animations['haumea'],   secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
+        sun      = Animation(preloadedFrames=self.animations['sun'],      secondsPerLoop=PLANET_SECONDS_PER_ROTATION)
 
         self.planets = [
-            AnimationButton(moonLoc,     self.uiManager, moon,     self.switchMenu, 'Moon',     background=self.background),
-            AnimationButton(marsLoc,     self.uiManager, mars,     self.switchMenu, 'Mars',     background=self.background),
-            AnimationButton(mercuryLoc,  self.uiManager, mercury,  self.switchMenu, 'Mercury',  background=self.background),
-            AnimationButton(venusLoc,    self.uiManager, venus,    self.switchMenu, 'Venus',    background=self.background),
-            AnimationButton(uranusLoc,   self.uiManager, uranus,   self.switchMenu, 'Uranus',   background=self.background),
-            AnimationButton(neptuneLoc,  self.uiManager, neptune,  self.switchMenu, 'Neptune',  background=self.background),
-            AnimationButton(jupiterLoc,  self.uiManager, jupiter,  self.switchMenu, 'Jupiter',  background=self.background),
-            AnimationButton(saturnLoc,   self.uiManager, saturn,   self.switchMenu, 'Saturn',   background=self.background),
-            AnimationButton(makemakeLoc, self.uiManager, makemake, self.switchMenu, 'Makemake', background=self.background),
-            AnimationButton(erisLoc,     self.uiManager, eris,     self.switchMenu, 'Eris',     background=self.background),
-            AnimationButton(haumeaLoc,   self.uiManager, haumea,   self.switchMenu, 'Haumea',   background=self.background),
-            AnimationButton(sunLoc,      self.uiManager, sun,      self.switchMenu, 'Sun',      background=self.background),
+            AnimationButton(moonLoc,     self.uiManager, moon,     self.switchMenu, 'UpgradeMenu', planet='Moon',     background=self.background),
+            AnimationButton(marsLoc,     self.uiManager, mars,     self.switchMenu, 'UpgradeMenu', planet='Mars',     background=self.background),
+            AnimationButton(mercuryLoc,  self.uiManager, mercury,  self.switchMenu, 'UpgradeMenu', planet='Mercury',  background=self.background),
+            AnimationButton(venusLoc,    self.uiManager, venus,    self.switchMenu, 'UpgradeMenu', planet='Venus',    background=self.background),
+            AnimationButton(uranusLoc,   self.uiManager, uranus,   self.switchMenu, 'UpgradeMenu', planet='Uranus',   background=self.background),
+            AnimationButton(neptuneLoc,  self.uiManager, neptune,  self.switchMenu, 'UpgradeMenu', planet='Neptune',  background=self.background),
+            AnimationButton(jupiterLoc,  self.uiManager, jupiter,  self.switchMenu, 'UpgradeMenu', planet='Jupiter',  background=self.background),
+            AnimationButton(saturnLoc,   self.uiManager, saturn,   self.switchMenu, 'UpgradeMenu', planet='Saturn',   background=self.background),
+            AnimationButton(makemakeLoc, self.uiManager, makemake, self.switchMenu, 'UpgradeMenu', planet='Makemake', background=self.background),
+            AnimationButton(erisLoc,     self.uiManager, eris,     self.switchMenu, 'UpgradeMenu', planet='Eris',     background=self.background),
+            AnimationButton(haumeaLoc,   self.uiManager, haumea,   self.switchMenu, 'UpgradeMenu', planet='Haumea',   background=self.background),
+            AnimationButton(sunLoc,      self.uiManager, sun,      self.switchMenu, 'UpgradeMenu', planet='Sun',      background=self.background),
         ]
 
-        self.leftButton  = Button([self.center.x - 250, selectButtonsLocY], self.uiManager, '<', self.moveSelection, LEFT,  size=selectButtonsSize)
+        self.leftButton  = Button([self.center.x - 250 - selectButtonsSize[0], selectButtonsLocY], self.uiManager, '<', self.moveSelection, LEFT,  size=selectButtonsSize)
         self.rightButton = Button([self.center.x + 250, selectButtonsLocY], self.uiManager, '>', self.moveSelection, RIGHT, size=selectButtonsSize)
 
-        self.titleText = Text('Select Planet', [self.center.x - 80, 80], size=50)
-        self.planetText = Text(self.planetNames[0].title(), [self.center.x - 80, 120], size=50)
+        self.titleText = Text('Select Planet', [self.center.x, 80], size=50)
+        self.planetText = Text(self.planetNames[0].title(), [self.center.x, 120], size=50)
 
         self.elements += tuple(self.planets) + (
             self.leftButton,
@@ -92,26 +95,17 @@ class PickPlanetMenu(GuiScene):
         # self.menuParams['lander'] = params['lander']
 
 
-    # def renderUI(self):
-    #     super().renderUI()
-
-    #     # self.background = [20, 20, 20]
-
-    #     # self.text = Text('You Died', textLoc, size=textSize)
-
-    #     self.elements += (
-    #     )
-
-
     def keyDown(self, event):
         key = super().keyDown(event)
         
         if key == 'escape':
-            self.exit()
+            self.switchMenu('SaveMenu')
         if key == 'left':
             self.moveSelection(LEFT)
         if key == 'right':
             self.moveSelection(RIGHT)
+        if key == 'enter' or key == 'return':
+            self.switchMenu('UpgradeMenu', planet=self.planetNames[self.selectedIndex].title())
 
 
     def run(self, deltaTime):
@@ -168,7 +162,6 @@ class PickPlanetMenu(GuiScene):
         # self.elements += (ImageButton(self.marsLoc, self.uiManager, self.mars.animate(), self.switchMenu, 'Moon', background=self.background, deltaColor=70),)
 
         return super().run(deltaTime)
-
 
 
     def moveSelection(self, direction):

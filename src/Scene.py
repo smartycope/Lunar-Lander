@@ -11,6 +11,8 @@ class Scene:
         self.background = [20, 20, 20]
         self.backgroundBlitOffset = [0, 0]
         self.money = params['money']
+        #* This is genius
+        # print(type(self), '\t ', self.money)
 
         # This is the directory in which the assets are loaded from
         self.dir = ''
@@ -41,10 +43,12 @@ class Scene:
         self._menu = menu
         self.menuParams['money'] = self.money
         self.menuParams.update(passParams)
+        # print(type(self), '\t ', self.money)
         # print('just before menu switch:', self.menuParams)
 
     def addMoney(self, amount):
         self.money += amount
+        # self.menuParams['money'] = self.money
 
     def showMouse(self, show):
         pygame.mouse.set_visible(show)
@@ -92,7 +96,7 @@ class Scene:
 
         #* Right mouse button released
         if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
-            self.mouseRightButtonDUp()
+            self.mouseRightButtonUp()
 
         #* If a file is dropped into the window
         if event.type == pygame.DROPFILE: #and event.file[-4:0] == '':

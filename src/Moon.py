@@ -1,4 +1,6 @@
-from Item import Coin, GasCan
+from Coin import Coin
+from GasCan import GasCan
+from SuperCoin import SuperCoin
 from Planet import *
 
 class Moon(Planet):
@@ -7,7 +9,7 @@ class Moon(Planet):
         self.background = [10, 10, 10]
         # landerStartPoint = Pointf(self.getSize()[0] / 2, 0)
         # self.lander = Lander(copy.deepcopy(landerStartPoint))
-        self.gravity = 1.6
+        self.gravity = 1.6 * METERS_PER_SECOND
         self.moonTexture = self.loadAsset('moonTexture')
         self.items += (Coin(),)
 
@@ -107,4 +109,4 @@ class Moon(Planet):
         # Add the bottom left corner
         tmpPoints.append([0, self.getSize()[1]])
         # Draw a textured polygon using those points
-        pygame.gfxdraw.textured_polygon(self.mainSurface, tmpPoints, self.moonTexture, *self.relativePoint.datai())
+        pygame.gfxdraw.textured_polygon(self.mainSurface, tmpPoints, self.moonTexture, int(self.relativePoint.x), int(self.relativePoint.y))

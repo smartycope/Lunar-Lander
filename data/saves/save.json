@@ -1,0 +1,30 @@
+{
+    "Classic": {
+        "fuelCapacity": 500,
+        "legStrength": 8,
+        "sideThrust": 1,
+        "specificImpulse": 6,
+        "thrust": 5,
+        "weight": 5000,
+        "rotationSpeed": 0
+    },
+    "Pip Squeek": {
+        "fuelCapacity": 1200,
+        "legStrength": 6,
+        "sideThrust": 0.1,
+        "specificImpulse": 3.8,
+        "thrust": 3.8,
+        "weight": 4200,
+        "rotationSpeed": 0
+    },
+    "Eagle": {
+        "fuelCapacity": 2353,
+        "legStrength": 10,
+        "sideThrust": 4,
+        "specificImpulse": 0,
+        "thrust": 16,
+        "weight": 4740,
+        "rotationSpeed": 0
+    },
+    "money": 0
+}

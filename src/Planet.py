@@ -3,29 +3,42 @@ import pygame.gfxdraw
 from Text   import Text
 from Scene  import *
 from time   import sleep
-from Item   import GasCan
+from GasCan import GasCan
+from ClassicLander import ClassicLander
+from PipSqueekLander import PipSqueekLander
 
 
 class Planet(Scene):
     def init(self, **params):
         # super().__init__(surface)
+
+        landerMap = {
+            'Classic': ClassicLander,
+            'Pip Squeek': PipSqueekLander,
+        }
+
+        self.gravity = None
+        self.texture = None
+
         self.showMouse(False)
         self.setKeyRepeat(20, 20)
 
         self.dir += 'planets/planetTextures/'
         
         self.landerStartPoint = Pointf(self.getSize()[0] / 2, 0)
-        self.lander = params['lander']
-        self.lander.loc = self.landerStartPoint
+        # Actually initialize the lander
+        self.lander = landerMap[params['lander']](self.landerStartPoint, DATA + '/saves/save.json')
+        # self.lander.loc = 
 
         self.relativePoint = Pointf(0, 0)
         self.groundPoints = []
         self.generateGround()
         self.generateMoreGround(left=True)
-        # self.money = Money() 
-        self.fuelGuage = Text(f'Fuel: {int(self.lander.fuel)}', Pointf(20, 20))
-        self.moneyText = Text(f'ByteCoin: {self.money}',   Pointf(20, 40))
-        self.deathText = Text('You have Died!', Pointf((self.getSize()[0] / 2) - 20, 5), color=[200, 20, 20])
+
+        self.fuelGuage = Text(f'Fuel: {int(self.lander.fuel)}', Pointi(20, 20), align=LEFT_ALIGN)
+        self.moneyText = Text(f'ByteCoin: {self.money}',   Pointi(20, 40), align=LEFT_ALIGN)
+        self.speedText = Text('Speed: 0 m/s', Pointi(20, 60), align=LEFT_ALIGN)
+
         self.explosionTime = 0
         self.paused = False
         self.pausedText = Text("PAUSED", Pointi(self.mainSurface.get_rect().center), size=50)
@@ -38,7 +51,7 @@ class Planet(Scene):
         self.items[0].locs.append(self.landerStartPoint)
         self.cnt = 0
 
-        self.menuParams['lander'] = self.lander
+        # self.menuParams['lander'] = self.lander
         
 
     def drawSurface(self):
@@ -53,15 +66,20 @@ class Planet(Scene):
         if not self.paused:
             self.updateItems()
 
+            # Update the lander
             self.lander.update(self.gravity, self.getVisibleGroundPoints(), self.mainSurface, self.relativePoint)
 
-            self.fuelGuage.updateText(f'Fuel: {int(self.lander.fuel)}')
+            # Update the gui text
+            #TODO This doesn't take into account specific impulse nor the weight of the fuel being less as we burn some (the rocket equation)
+            self.fuelGuage.updateText(f'Fuel: {round((self.lander.fuel))} ΔV') #  * FUEL_THRUST) * self.lander.specificImpulse
             self.fuelGuage.draw(self.mainSurface)
-            self.moneyText.updateText(f'ByteCoin: {self.money}')
+            self.moneyText.updateText(f'ByteCoin: {round(self.money)}')
             self.moneyText.draw(self.mainSurface)
+            self.speedText.updateText(f'Speed: {round(self.lander.getSpeed(), 1)} m/s')
+            self.speedText.draw(self.mainSurface)
 
+            # Check if the lander has exploded, and display the animation
             if self.lander.exploded:
-                self.deathText.draw(self.mainSurface)
                 if self.explosionTime <= EXPLODE_TIME:
                     self.lander.explode(self.mainSurface, initial=self.explosionTime < (EXPLODE_TIME / 4), offset=self.relativePoint)
                     self.explosionTime += 1
@@ -75,11 +93,12 @@ class Planet(Scene):
                     self.switchMenu('DeathMenu')
                     self.lander.reset(self.landerStartPoint)
 
+            # Check how much to the side we need to move
             tmp = self.updateScroll()
             if tmp:
                 self.generateMoreGround()
                 for i in self.items:
-                    i.generateMore(tmp, self.getSize(), self.groundPoints)
+                    i.generateNext(tmp, self.getSize(), self.groundPoints)
 
             self.drawSurface()
 
@@ -139,7 +158,7 @@ class Planet(Scene):
             self.lander.fuel = 1000
     
         if key == 'escape':
-            self.exit()
+            self.switchMenu('SaveMenu', killButton=True)
 
 
     def keyUp(self, event):

@@ -1,5 +1,7 @@
 from Planet import *
-from Item import *
+from Coin import Coin
+from GasCan import GasCan
+from SuperCoin import SuperCoin
 
 class Eris(Planet):
     def init(self, **params):

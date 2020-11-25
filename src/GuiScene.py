@@ -4,14 +4,15 @@ from Text import Text
 import pygame_gui
 
 class GuiScene(Scene):
-    def init(self, **params):
+    def __init__(self, surface, **params):
+        self.uiManager = pygame_gui.UIManager(surface.get_size(), GUI_THEME_FILE)
+        self.elements = ()
         self.showMouse(True)
         self.setKeyRepeat(200, 20)
-        self.uiManager = pygame_gui.UIManager(self.getSize(), GUI_THEME_FILE)
         self.background = self.uiManager.get_theme().get_colour('dark_bg')
-        self.elements = ()
-        self.renderUI()
         self.debug = False
+        super().__init__(surface, **params)
+        self.renderUI()
 
         # PackageResource(package='data.themes', resource='theme_2.json'))
 
@@ -38,18 +39,7 @@ class GuiScene(Scene):
         super().handleEvent(event)
 
         self.uiManager.process_events(event)
-
-
-    def keyDown(self, event):
-        key = super().keyDown(event)
-        
-        if key == 'escape':
-            self.exit()
-        if key == 'left':
-            self.moveSelection(LEFT)
-        if key == 'right':
-            self.moveSelection(RIGHT)
-            
+                    
 
     def run(self, deltaTime):
         if self.debug:

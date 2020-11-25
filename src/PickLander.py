@@ -1,5 +1,6 @@
 from GuiScene import *
 from ClassicLander import ClassicLander
+from PipSqueekLander import PipSqueekLander
 
 class PickLanderMenu(GuiScene):
     def renderUI(self):
@@ -13,31 +14,30 @@ class PickLanderMenu(GuiScene):
         landerImage  = self.loadAsset('classicLander-fullSize', [270, 270])
         lander1Image = self.loadAsset('pipSqueek-fullSize', [240, 270])
 
-        classic = ClassicLander()
-        pipSqueek = ClassicLander()
+        self.actualLanders = ['Pip Squeek', 'Classic']
 
         selectButtonsSize = [80, 400]
         selectButtonsLocY = self.center.y - 200
 
         self.selectedIndex = 0
 
-        self.positionSelected = [self.center.x - 90,  self.center.y - 70]
-        self.positionLeft     = [self.center.x - 550, self.center.y - 70]
-        self.positionRight    = [self.center.x + 350, self.center.y - 70]
+        self.positionSelected = [self.center.x - 135, self.center.y - 70]
+        self.positionLeft     = [self.center.x - 665, self.center.y - 70]
+        self.positionRight    = [self.center.x + 400, self.center.y - 70]
 
         self.background = pygame.transform.average_color(landerImage)
 
         self.landers = [
-            ImageButton(self.positionSelected, self.uiManager, landerImage,  self.switchMenu, 'PickPlanetMenu', lander=classic,   background=self.background),
-            ImageButton(self.positionRight,    self.uiManager, lander1Image, self.switchMenu, 'PickPlanetMenu', lander=pipSqueek, background=self.background),
+            ImageButton(self.positionSelected, self.uiManager, lander1Image, self.switchMenu, 'PickPlanetMenu', lander=self.actualLanders[0], background=self.background),
+            ImageButton(self.positionRight,    self.uiManager, landerImage,  self.switchMenu, 'PickPlanetMenu', lander=self.actualLanders[1], background=self.background),
         ]
 
         self.landers[1].element.disable()
 
-        self.leftButton  = Button([self.center.x - 250, selectButtonsLocY], self.uiManager, '<', self.moveSelection, LEFT,  size=selectButtonsSize)
+        self.leftButton  = Button([self.center.x - 250 - selectButtonsSize[0], selectButtonsLocY], self.uiManager, '<', self.moveSelection, LEFT,  size=selectButtonsSize)
         self.rightButton = Button([self.center.x + 250, selectButtonsLocY], self.uiManager, '>', self.moveSelection, RIGHT, size=selectButtonsSize)
 
-        self.titleText = Text('Select Lander', [self.center.x - 80, 80], size=50)
+        self.titleText = Text('Select Lander', [self.center.x, 80], size=50)
 
 
         self.elements += tuple(self.landers) + (
@@ -50,7 +50,13 @@ class PickLanderMenu(GuiScene):
         key = super().keyDown(event)
         
         if key == 'escape':
-            self.exit()
+            self.switchMenu('SaveMenu')
+        if key == 'left':
+            self.moveSelection(LEFT)
+        if key == 'right':
+            self.moveSelection(RIGHT)
+        if key == 'enter' or key == 'return':
+            self.switchMenu('PickPlanetMenu', lander=self.actualLanders[self.selectedIndex])
 
     def moveSelection(self, direction):
         if direction == LEFT:
@@ -86,7 +92,6 @@ class PickLanderMenu(GuiScene):
         for i in self.landers:
             if i != self.landers[self.selectedIndex]:
                 i.element.disable()
-
 
     def run(self, deltaTime):
         self.titleText.draw(self.mainSurface)

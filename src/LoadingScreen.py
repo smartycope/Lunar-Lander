@@ -14,6 +14,7 @@ class LoadingBar:
         self.loc = loc
         
         self._progress = self.length
+        self.finished = False
 
         self.func = finsihedFunc
         self.params = params
@@ -26,6 +27,7 @@ class LoadingBar:
         self._progress -= amount
 
         if self._progress <= 0:
+            self.finished = True
             self.func(*self.params, **self.kwparams)
             return True
         else:
@@ -38,10 +40,10 @@ class LoadingBar:
 
 class LoadingScreen(Scene):
     def init(self, **params):
-        self.text = Text('Solar Lander', Pointi(self.center.x - 175, 200), size=80)
+        self.text = Text('Solar Lander', Pointi(self.center.x, 200), size=80)
         # self.texts = []
         # Over estimate the amount of tasks
-        self.loadingBar = LoadingBar(self.mainSurface, [self.center.x - 120, self.center.y + 100], self.switchMenu, 'PickLanderMenu', tasks=1210)
+        self.loadingBar = LoadingBar(self.mainSurface, [self.center.x - 120, self.center.y + 100], self.switchMenu, 'LandingMenu', secondsPerLoop=3)
         self.mainSurface.fill(self.background)
         self.text.draw(self.mainSurface)
         # for cnt, i in enumerate(pygame.font.get_fonts()):
@@ -74,7 +76,8 @@ class LoadingScreen(Scene):
 
         # self.text = Text('Solar Lander', Pointi(self.center.x - 175, 200), size=80)
         self.text.draw(self.mainSurface)
-        self.loadingBar.progress()
+        if self.loadingBar.finished:
+            self.loadingBar.progress()
 
         return self._menu
 

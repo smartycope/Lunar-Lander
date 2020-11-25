@@ -3,9 +3,13 @@ from GlobalFuncs   import *
 
 # Scenes
 from LoadingScreen import LoadingScreen
+from LandingMenu   import LandingMenu
+from CreditsMenu   import CreditsMenu
 from PickLander    import PickLanderMenu
 from PickPlanet    import PickPlanetMenu
+from UpgradeMenu   import UpgradeMenu
 from DeathMenu     import DeathMenu
+from SaveMenu      import SaveMenu
 
 # Planet Scenes
 from Moon          import Moon
@@ -28,11 +32,19 @@ class Game:
         self.args = args
         self.fps = FPS
 
-        self.money = 0
+        with open(DATA + '/saves/save.json', 'r') as f:
+            money = json.load(f)['money']
 
         self.initPygame(size, title)
 
         self.scenes = {
+            'LoadingScreen':  LoadingScreen,
+            'LandingMenu':    LandingMenu,
+            'CreditsMenu':    CreditsMenu,
+            'PickLanderMenu': PickLanderMenu,
+            'PickPlanetMenu': PickPlanetMenu,
+            'UpgradeMenu':    UpgradeMenu,
+            'SaveMenu':       SaveMenu,
             'Moon':           Moon,
             'Mars':           Mars,
             'Mercury':        Mercury,
@@ -46,15 +58,12 @@ class Game:
             'Haumea':         Haumea,
             'Sun':            Sun,
             'DeathMenu':      DeathMenu,
-            'LoadingScreen':  LoadingScreen,
-            'PickLanderMenu': PickLanderMenu,
-            'PickPlanetMenu': PickPlanetMenu,
         }
 
         startScene = 'LoadingScreen'
-        # startScene = 'PickLanderMenu'
+        # startScene = 'LandingMenu'
 
-        self.currentScene = self.scenes[startScene](self.mainSurface, money=self.money)
+        self.currentScene = self.scenes[startScene](self.mainSurface, money=money)
         self.sceneStack = [startScene]
 
     def run(self):
@@ -89,7 +98,7 @@ class Game:
             if type(self.currentScene.background) in [list, tuple, pygame.Color]:
                 self.mainSurface.fill(self.currentScene.background)
             elif type(self.currentScene.background) == pygame.Surface:
-                self.mainSurface.blit(self.currentScene.background, self.currentScene.backgroundBlitOffset)
+                self.mainSurface.blit(self.currentScene.background, self.currentScene.backgroundBlitOffset, special_flags=pygame.BLEND_RGBA_SUB)
             elif self.currentScene.background is None:
                 pass
             else:
@@ -124,9 +133,9 @@ class Game:
             self.windowedSize[1] = round(self.screenSize[1] / 1.5)
 
         if START_FULLSCREEN:
-            self.mainSurface = pygame.display.set_mode(self.screenSize, self.fullscreenWindowFlags)
+            self.mainSurface = pygame.display.set_mode(self.screenSize, self.fullscreenWindowFlags, display=START_DISPLAY)
         else:
-            self.mainSurface = pygame.display.set_mode(self.windowedSize, self.windowedWindowFlags)
+            self.mainSurface = pygame.display.set_mode(self.windowedSize, self.windowedWindowFlags, display=START_DISPLAY)
         
         #* Get info about the graphics
         vidInfo = pygame.display.Info()

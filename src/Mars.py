@@ -1,4 +1,6 @@
-from Item import Coin, GasCan
+from Coin import Coin
+from GasCan import GasCan
+from SuperCoin import SuperCoin
 from Planet import *
 
 class Mars(Planet):
