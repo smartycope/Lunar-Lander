@@ -124,8 +124,7 @@ class Scene:
                           pygame.QUIT, pygame.JOYAXISMOTION, 
                           pygame.JOYBALLMOTION, pygame.JOYBUTTONDOWN, 
                           pygame.JOYBUTTONUP, pygame.JOYHATMOTION, 
-                          pygame.VIDEOEXPOSE, pygame.VIDEORESIZE, 
-                          pygame.WINDOWEVENT, pygame.WINDOWEVENT_CLOSE]:
+                          pygame.VIDEOEXPOSE, pygame.VIDEORESIZE]:
             self.handleOtherEvent(event)
 
     def mouseLeftButtonDown(self):
